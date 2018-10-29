@@ -28,7 +28,7 @@ model.add(Conv2D(1, (3, 3), activation='relu', padding='same'))
 model.add(UpSampling2D((2, 2)))
 model.add(Conv2D(12, (3, 3), activation='relu', padding='same'))
 model.add(UpSampling2D((2, 2)))
-model.add(Conv2D(1, (3, 3), activation='relu', padding='same'))
+model.add(Conv2D(1, (3, 3), activation='sigmoid', padding='same'))
 model.add(Reshape((28, 28)))
 
 model.compile(optimizer='adam', loss='mse')
