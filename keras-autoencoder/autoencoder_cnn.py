@@ -24,10 +24,12 @@ model.add(Conv2D(8, (3, 3), activation='relu', padding='same'))
 model.add(MaxPooling2D(2, 2))
 model.add(Conv2D(4, (3, 3), activation='relu', padding='same'))
 model.add(MaxPooling2D(2, 2))
-model.add(Conv2D(1, (3, 3), activation='relu', padding='same'))
-model.add(UpSampling2D((2, 2)))
+
+model.add(Conv2D(8, (1,1), activation='relu', padding='same'))
+
+model.add(UpSampling2D((2, 2),interpolation="bilinear"))
 model.add(Conv2D(12, (3, 3), activation='relu', padding='same'))
-model.add(UpSampling2D((2, 2)))
+model.add(UpSampling2D((2, 2),interpolation="bilinear"))
 model.add(Conv2D(1, (3, 3), activation='sigmoid', padding='same'))
 model.add(Reshape((28, 28)))
 
