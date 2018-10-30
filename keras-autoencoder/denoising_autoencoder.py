@@ -23,12 +23,11 @@ config.encoding_dim = 32
 config.epochs = 10
 
 (x_train, _), (x_test, _) = mnist.load_data()
-(x_train_noisy, x_test_noisy) = add_noise(x_train, x_test)
-
 
 x_train = x_train.astype('float32') / 255.
 x_test = x_test.astype('float32') / 255.
 
+(x_train_noisy, x_test_noisy) = add_noise(x_train, x_test)
 
 model = Sequential()
 model.add(Flatten(input_shape=(28,28)))

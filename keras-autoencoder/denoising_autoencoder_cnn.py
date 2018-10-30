@@ -33,7 +33,7 @@ x_test = x_test.astype('float32') / 255.
 
 (x_train_noisy, x_test_noisy) = add_noise(x_train, x_test)
 
-# What if you train on one level of noise, and run on a different noise level (not as bad)?
+# MJH: What if you train on one level of noise, and run on a different noise level (not as bad)?
 
 
 
