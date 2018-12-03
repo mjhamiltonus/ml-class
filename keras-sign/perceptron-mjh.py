@@ -67,8 +67,8 @@ model.compile(loss=config.loss, optimizer=config.optimizer,
 
 
 # Fit the model
-model.fit(X_train[:100], y_train[:100], epochs=config.epochs, 
-          # validation_data=(X_test, y_test), 
+model.fit(X_train, y_train, epochs=config.epochs, 
+          validation_data=(X_test, y_test), 
           callbacks=[WandbCallback(data_type="image", labels=signdata.letters)])
 
 print("Target:      \n{:}".format(y_train[:2]))
