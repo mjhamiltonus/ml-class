@@ -42,29 +42,30 @@ X_test = X_test / 255.
 
 # create model
 model=Sequential()
-model.add(Flatten(input_shape=(img_width, img_height)))
-model.add(Dense(num_classes,activation='softmax'))
+# model.add(Flatten(input_shape=(img_width, img_height)))
+# model.add(Dense(num_classes,activation='softmax'))
 
 # MJH  create model used in the "fashion" classifier
-# config.first_layer_convs = 32
-# config.first_layer_conv_width = 3
-# config.first_layer_conv_height = 3
+config.first_layer_convs = 32
+config.first_layer_conv_width = 3
+config.first_layer_conv_height = 3
 
-# model = Sequential()
-# model.add(Reshape((img_width, img_height, 1), input_shape=(img_width,img_height)))
-# model.add(Conv2D(32,
-#     (config.first_layer_conv_width, config.first_layer_conv_height),
-#     input_shape=(img_width, img_height, 1),
-#     activation='relu'))
+model = Sequential()
+model.add(Reshape((img_width, img_height, 1), input_shape=(img_width,img_height)))
+model.add(Conv2D(32,
+    (config.first_layer_conv_width, config.first_layer_conv_height),
+    input_shape=(img_width, img_height, 1),
+    activation='relu'))
 
-# model.add(Flatten(input_shape=(img_width, img_height)))
-# model.add(Dropout(config.dropout))
-# model.add(Dense(config.hidden_layer_1_size, activation='relu'))
-# model.add(Dropout(config.dropout))
-# model.add(Dense(num_classes, activation='softmax'))
+model.add(Flatten(input_shape=(img_width, img_height)))
+model.add(Dropout(config.dropout))
+model.add(Dense(config.hidden_layer_1_size, activation='relu'))
+model.add(Dropout(config.dropout))
+model.add(Dense(num_classes, activation='softmax'))
+
+# Compile, set up the loss and optimizer
 model.compile(loss=config.loss, optimizer=config.optimizer,
               metrics=['accuracy'])
-
 
 # Fit the model
 model.fit(X_train, y_train, epochs=config.epochs, 
