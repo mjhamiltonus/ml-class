@@ -16,7 +16,7 @@ wandb.init()
 config = wandb.config
 
 config.repeated_predictions = True
-config.look_back = 4
+config.look_back = 10
 
 def load_data(data_type="airline"):
     if data_type == "flu":
@@ -41,6 +41,13 @@ def create_dataset(dataset):
 
 data = load_data("sin")
     
+# MJH _ Decimate
+print("data shape: {:}".format(data.shape))
+iiUse = np.arange(0,data.shape[0],10)
+print("iiuse: {:}".format(iiUse[0:10]))
+data = data[iiUse]
+
+
 # normalize data to between 0 and 1
 max_val = max(data)
 min_val = min(data)
