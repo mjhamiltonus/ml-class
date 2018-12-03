@@ -35,13 +35,15 @@ num_classes = y_train.shape[1]
 print("y_test shape: {:}".format(y_test.shape))
 
 # you may want to normalize the data here..
-
+# MJH: add normalization
+X_train = X_train / 255.
+X_test = X_test / 255.
 
 
 # create model
 model=Sequential()
 model.add(Flatten(input_shape=(img_width, img_height)))
-model.add(Dense(num_classes), activation='softmax')
+model.add(Dense(num_classes,activation='softmax'))
 
 # MJH  create model used in the "fashion" classifier
 # config.first_layer_convs = 32
