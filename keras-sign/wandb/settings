@@ -1,4 +1,4 @@
 [default]
 entity: qualcomm
-project: asl-sep13
+project: sign-dec3
 base_url: https://api.wandb.ai
