@@ -8,16 +8,29 @@ from keras.layers import Input
 import glob
 import wandb
 from wandb.keras import WandbCallback
-from dogcat_data import generators, get_nb_files
+import signdata
+# from dogcat_data import generators, get_nb_files
 
 run = wandb.init()
+
 config = run.config
-config.img_width = 224 
-config.img_height = 224
+config.loss = "categorical_crossentropy"
+config.optimizer = "adam"
 config.epochs = 50
+config.dropout = 0.4
+config.hidden_layer_1_size = 128
 config.batch_size = 32
 
-inp = Input(shape=(224, 224, 3), name='input_image')
+# load data
+(X_test, y_test) = signdata.load_test_data()
+(X_train, y_train) = signdata.load_train_data()
+
+config.img_width = X_test.shape[1]
+config.img_height = X_test.shape[2]
+
+inp = Input(shape=(config.img_height, config.img_width, 3), name='input_image')
+
+#TODO: need to reshape the data into X,Y,3 vs. B/W images I currently have for ResNet.
 
 main_model = ResNet50(include_top=False, weights="imagenet")
 for layer in main_model.layers:
@@ -37,22 +50,29 @@ model.compile(loss='binary_crossentropy',
               optimizer=optimizers.SGD(lr=1e-4, momentum=0.9),
               metrics=['accuracy'])
 
-train_dir = "dogcat-data/train"
-val_dir = "dogcat-data/validation"
-nb_train_samples = get_nb_files(train_dir)
-nb_classes = len(glob.glob(train_dir + "/*"))
-nb_val_samples = get_nb_files(val_dir)
 
-train_generator, validation_generator = generators(preprocess_input, config.img_width, config.img_height, config.batch_size, binary=True)
+# Fit the model - try to do without generators
+model.fit(X_train, y_train, epochs=config.epochs, 
+          validation_data=(X_test, y_test), 
+          callbacks=[WandbCallback(data_type="image", labels=signdata.letters)])
 
-# fine-tune the model
-model.fit_generator(
-    train_generator,
-    epochs=config.epochs,
-    validation_data=validation_generator,
-    callbacks=[WandbCallback(data_type="image", generator=validation_generator, labels=['cat', 'dog'],save_model=False)],
-    workers=2,
-    steps_per_epoch=nb_train_samples * 2 / config.batch_size,
-    validation_steps=nb_train_samples / config.batch_size,
-)
-model.save('transfered.h5')
+
+# train_dir = "-data/train"
+# val_dir = "dogcat-data/validation"
+# nb_train_samples = get_nb_files(train_dir)
+# nb_classes = len(glob.glob(train_dir + "/*"))
+# nb_val_samples = get_nb_files(val_dir)
+
+# train_generator, validation_generator = generators(preprocess_input, config.img_width, config.img_height, config.batch_size, binary=True)
+
+# # fine-tune the model
+# model.fit_generator(
+#     train_generator,
+#     epochs=config.epochs,
+#     validation_data=validation_generator,
+#     callbacks=[WandbCallback(data_type="image", generator=validation_generator, labels=['cat', 'dog'],save_model=False)],
+#     workers=2,
+#     steps_per_epoch=nb_train_samples * 2 / config.batch_size,
+#     validation_steps=nb_train_samples / config.batch_size,
+# )
+# model.save('transfered.h5')
