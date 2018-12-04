@@ -60,7 +60,7 @@ for word, index in tokenizer.word_index.items():
 model = Sequential()
 model.add(Embedding(config.vocab_size, 100, input_length=config.maxlen, weights=[embedding_matrix], trainable=False))
 # 
-model.add(LSTM(50, activation="sigmoid", return_sequences=True))
+model.add(LSTM(50, activation="sigmoid", return_sequences=True, dropout=0.25, recurrent_dropout=0.25))
 model.add(LSTM(50, activation="sigmoid"))
 model.add(Dense(1, activation='sigmoid'))
 model.compile(loss='binary_crossentropy',
