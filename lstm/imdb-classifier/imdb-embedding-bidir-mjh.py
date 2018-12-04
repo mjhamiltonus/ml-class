@@ -18,8 +18,8 @@ wandb.init()
 config = wandb.config
 
 # set parameters:
-config.vocab_size = 500      # 300
-config.maxlen = 50           # 200.  Mode is about 180
+config.vocab_size = 1500      # 300
+config.maxlen = 200           # 200.  Mode is about 180
 config.batch_size = 32
 config.embedding_dims = 50   #  20
 config.filters = 250
@@ -68,7 +68,7 @@ for word, index in tokenizer.word_index.items():
 model = Sequential()
 model.add(Embedding(config.vocab_size, 100, input_length=config.maxlen, weights=[embedding_matrix], trainable=False))
 # 
-model.add(Bidirectional(LSTM(10, activation="sigmoid", dropout=0.25, recurrent_dropout=0.25)))
+model.add(Bidirectional(LSTM(50, activation="sigmoid", dropout=0.50, recurrent_dropout=0.50)))
 
 model.add(Dense(1, activation='sigmoid'))
 model.compile(loss='binary_crossentropy',
