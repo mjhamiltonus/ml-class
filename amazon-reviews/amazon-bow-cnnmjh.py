@@ -18,6 +18,7 @@ config.filters = 250
 config.kernel_size = 3
 config.hidden_dims = 250
 config.epochs = 10
+config.batch_size = 32
 
 (train_summary, train_review_text, train_labels), (test_summary, test_review_text, test_labels) = amazon.load_amazon()
 
@@ -26,6 +27,8 @@ tokenizer.fit_on_texts(train_review_text)
 X_train = tokenizer.texts_to_matrix(train_review_text)
 X_test = tokenizer.texts_to_matrix(test_review_text)
 
+y_train = train_labels
+y_test = test_labels
 
 # MJH - CNN model from imdb-cnn.py
 model = Sequential()
