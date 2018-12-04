@@ -15,8 +15,8 @@ from plotutil import PlotCallback
 wandb.init()
 config = wandb.config
 
-config.repeated_predictions = True
-config.look_back = 10
+config.repeated_predictions = False
+config.look_back = 36
 
 def load_data(data_type="airline"):
     if data_type == "flu":
@@ -39,13 +39,13 @@ def create_dataset(dataset):
         dataY.append(dataset[i + config.look_back])
     return np.array(dataX), np.array(dataY)
 
-data = load_data("sin")
+data = load_data("airline")
     
-# MJH _ Decimate
-print("data shape: {:}".format(data.shape))
-iiUse = np.arange(0,data.shape[0],10)
-print("iiuse: {:}".format(iiUse[0:10]))
-data = data[iiUse]
+# MJH _ Decimate sin wave data
+# print("data shape: {:}".format(data.shape))
+# iiUse = np.arange(0,data.shape[0],10)
+# print("iiuse: {:}".format(iiUse[0:10]))
+# data = data[iiUse]
 
 
 # normalize data to between 0 and 1
@@ -55,8 +55,9 @@ data=(data-min_val)/(max_val-min_val)
 
 # split into train and test sets
 split = int(len(data) * 0.70)
+print("split point: {:}".format(split))
 train = data[:split]
-test = data[split:]
+test = data[split-1:]
 
 trainX, trainY = create_dataset(train)
 testX, testY = create_dataset(test)
@@ -66,7 +67,8 @@ testX = testX[:, :, np.newaxis]
 
 # create and fit the RNN
 model = Sequential()
-model.add(SimpleRNN(1, input_shape=(config.look_back,1 )))
+model.add(SimpleRNN(10, input_shape=(config.look_back,1)))
+model.add(Dense(1))
 model.compile(loss='mae', optimizer='rmsprop')
 model.fit(trainX, trainY, epochs=1000, batch_size=20, validation_data=(testX, testY),  callbacks=[WandbCallback(), PlotCallback(trainX, trainY, testX, testY, config.look_back)])
 
