@@ -19,7 +19,7 @@ config = wandb.config
 
 # set parameters:
 config.vocab_size = 500      # 300
-config.maxlen = 180          # 200 
+config.maxlen = 50           # 200.  Mode is about 180
 config.batch_size = 32
 config.embedding_dims = 50   #  20
 config.filters = 250
@@ -28,6 +28,14 @@ config.hidden_dims = 100
 config.epochs = 10
 
 (X_train, y_train), (X_test, y_test) = imdb.load_imdb()
+
+# print("xtrain shape: {:}".format(len(X_train)))
+# X_train = X_train[0:500] + X_train[25000:25500]
+# y_train = y_train[0:500] + y_train[25000:25500]
+# print("culled xtrain shape: {:}".format(len(X_train)))
+
+# exit()
+
 
 tokenizer = text.Tokenizer(num_words=config.vocab_size)
 tokenizer.fit_on_texts(X_train)
@@ -60,8 +68,7 @@ for word, index in tokenizer.word_index.items():
 model = Sequential()
 model.add(Embedding(config.vocab_size, 100, input_length=config.maxlen, weights=[embedding_matrix], trainable=False))
 # 
-model.add(Bidirectional(LSTM(50, return_sequences=True, activation="sigmoid", dropout=0.25, recurrent_dropout=0.25)))
-model.add(Bidirectional(LSTM(50, activation="sigmoid", dropout=0.25, recurrent_dropout=0.25)))
+model.add(Bidirectional(LSTM(10, activation="sigmoid", dropout=0.25, recurrent_dropout=0.25)))
 
 model.add(Dense(1, activation='sigmoid'))
 model.compile(loss='binary_crossentropy',
