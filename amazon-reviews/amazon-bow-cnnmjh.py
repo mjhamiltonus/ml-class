@@ -18,7 +18,7 @@ config.filters = 250
 config.kernel_size = 3
 config.hidden_dims = 250
 config.epochs = 10
-config.batch_size = 256
+config.batch_size = 128
 
 (train_summary, train_review_text, train_labels), (test_summary, test_review_text, test_labels) = amazon.load_amazon()
 
