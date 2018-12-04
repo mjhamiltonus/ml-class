@@ -69,9 +69,15 @@ while len(questions) < config.training_size:
         continue
     seen.add(key)
     # Pad the data with spaces such that it is always MAXLEN.
-    q = '{}-{}'.format(a, b)
-    query = q + ' ' * (maxlen - len(q))
-    ans = str(a - b)
+    if np.random.rand() > 0.5:
+        q = '{}-{}'.format(a, b)
+        query = q + ' ' * (maxlen - len(q))
+        ans = str(a - b)
+    else:
+        q = '{}+{}'.format(a, b)
+        query = q + ' ' * (maxlen - len(q))
+        ans = str(a + b)
+
     # Answers can be of maximum size DIGITS + 1.
     ans += ' ' * (config.digits + 1 - len(ans))
 
