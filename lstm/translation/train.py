@@ -92,7 +92,7 @@ for i, (input_text, target_text) in enumerate(zip(input_texts, target_texts)):
 
 # Define an input sequence and process it.
 encoder_inputs = Input(shape=(None, num_encoder_tokens))
-encoder = CuDNNLSTM(config.latent_dim, return_state=True)
+encoder = CuDNNLSTM(config.latent_dim, return_state=True, dropout=0.25, recurrent_dropout=0.25)
 encoder_outputs, state_h, state_c = encoder(encoder_inputs)
 # We discard `encoder_outputs` and only keep the states.
 encoder_states = [state_h, state_c]
@@ -102,7 +102,7 @@ decoder_inputs = Input(shape=(None, num_decoder_tokens))
 # We set up our decoder to return full output sequences,
 # and to return internal states as well. We don't use the
 # return states in the training model, but we will use them in inference.
-decoder_lstm = CuDNNLSTM(config.latent_dim, return_sequences=True, return_state=True)
+decoder_lstm = CuDNNLSTM(config.latent_dim, return_sequences=True, return_state=True, dropout=0.25, recurrent_dropout=0.25)
 decoder_outputs, _, _ = decoder_lstm(decoder_inputs,
                                      initial_state=encoder_states)
 decoder_dense = Dense(num_decoder_tokens, activation='softmax')
@@ -113,7 +113,7 @@ decoder_outputs = decoder_dense(decoder_outputs)
 model = Model([encoder_inputs, decoder_inputs], decoder_outputs)
 
 # Run training
-model.compile(optimizer='rmsprop', loss='categorical_crossentropy')
+model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
 model.fit([encoder_input_data, decoder_input_data], decoder_target_data,
           batch_size=config.batch_size,
           epochs=config.epochs,
